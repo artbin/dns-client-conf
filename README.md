@@ -27,9 +27,10 @@ $ go get github.com/ArtemKulyabin/dns-client-conf
 ```
 $ sudo dns-client-conf add 8.8.8.8 8.8.4.4 # Google Public DNS
 DNS servers added successfully
-$ dns-client-conf showGox is a simple, no-frills tool for Go cross compilation that behaves a
-lot like standard `go build`. Gox will parallelize builds for multiple
-platforms. Gox will also build the cross-compilation toolchain for you.
+$ dns-client-conf show
+8.8.8.8
+8.8.4.4
+...
 $ sudo dns-client-conf add 77.88.8.8 77.88.8.1 # Yandex.DNS
 DNS servers added successfully
 $ dns-client-conf show
