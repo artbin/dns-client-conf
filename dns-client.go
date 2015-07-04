@@ -1,5 +1,5 @@
 /*
-Package dns-client-conf provides a portable interface for operating system
+Package dnsclientconf provides a portable interface for operating system
 dns client settings.
 */
 package dnsclientconf

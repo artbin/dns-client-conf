@@ -16,8 +16,7 @@ func NewDNSConfigurator() DNSConfigurator {
 }
 
 func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
-	addrs, err = resolvconf.GetNameServers(dnsconf.resolvConfigPath)
-	return addrs, err
+	return resolvconf.GetNameServers(dnsconf.resolvConfigPath)
 }
 
 func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
@@ -26,9 +25,7 @@ func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
 		return err
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }
 
 func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
@@ -37,7 +34,5 @@ func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
 		return err
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }

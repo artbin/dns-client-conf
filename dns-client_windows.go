@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/ArtemKulyabin/dns-client-conf/debugmode"
 	"github.com/ArtemKulyabin/dns-client-conf/helpers"
 )
 
@@ -30,35 +31,26 @@ func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
 	}
 
 	for i, addr := range addrs {
-		netshCmd := exec.Command("netsh", "interface", "ip", "add", "dnsservers", dnsconf.Interface, addr, fmt.Sprintf("%d", i+1))
-		err = netshCmd.Run()
+		err = debugmode.DebugExec("netsh", "interface", "ip", "add", "dnsservers", dnsconf.Interface, addr, fmt.Sprintf("%d", i+1))
 		if err != nil {
 			return err
 		}
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }
 
 func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
-	netshCmd := exec.Command("netsh", "interface", "ip", "set", "dnsservers", dnsconf.Interface, "dhcp")
-	err = netshCmd.Run()
+	err = debugmode.DebugExec("netsh", "interface", "ip", "set", "dnsservers", dnsconf.Interface, "dhcp")
 	if err != nil {
 		return err
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }
 
 func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
-	ipconfigCmd := exec.Command("ipconfig", "/flushdns")
-	err = ipconfigCmd.Run()
-
-	return err
+	return debugmode.DebugExec("ipconfig", "/flushdns")
 }
 
 func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {

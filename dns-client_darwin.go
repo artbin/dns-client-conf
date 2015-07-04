@@ -1,8 +1,7 @@
 package dnsclientconf
 
 import (
-	"os/exec"
-
+	"github.com/ArtemKulyabin/dns-client-conf/debugmode"
 	"github.com/ArtemKulyabin/dns-client-conf/resolvconf"
 )
 
@@ -20,43 +19,32 @@ func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
 	//networksetup -setdnsservers Ethernet addrs
 	args := []string{"-setdnsservers", "Ethernet"}
 	args = append(args, addrs...)
-	networksetupCmd := exec.Command("networksetup", args...)
-	err = networksetupCmd.Run()
+	err = debugmode.DebugExec("networksetup", args...)
 	if err != nil {
 		return err
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }
 
 func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
-	addrs, err = resolvconf.GetNameServers(dnsconf.resolvConfigPath)
-	return addrs, err
+	return resolvconf.GetNameServers(dnsconf.resolvConfigPath)
 }
 
 func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
-	ipconfigCmd := exec.Command("ipconfig", "set", dnsconf.Interface, "DHCP")
-	err = ipconfigCmd.Run()
+	err = debugmode.DebugExec("ipconfig", "set", dnsconf.Interface, "DHCP")
 	if err != nil {
 		return err
 	}
 
-	err = dnsconf.ReloadNameServers()
-
-	return err
+	return dnsconf.ReloadNameServers()
 }
 
 func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
-	discoveryutilCmd := exec.Command("discoveryutil", "mdnsflushcache")
-	err = discoveryutilCmd.Run()
+	err = debugmode.DebugExec("discoveryutil", "mdnsflushcache")
 	if err != nil {
 		return err
 	}
 
-	discoveryutilCmd = exec.Command("discoveryutil", "udnsflushcaches")
-	err = discoveryutilCmd.Run()
-
-	return err
+	return debugmode.DebugExec("discoveryutil", "udnsflushcaches")
 }

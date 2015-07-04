@@ -1,6 +1,6 @@
 package dnsclientconf
 
-import "os/exec"
+import "github.com/ArtemKulyabin/dns-client-conf/debugmode"
 
 const (
 	ResolvConfigPath         = "/etc/resolv.conf"
@@ -18,8 +18,5 @@ const (
 func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
 	// On receiving HUP dhclient will restart itself, reading dhclient.conf(5) and
 	// obtaining a new lease.
-	dhclientCmd := exec.Command("pkill", "-HUP", "dhclient")
-	err = dhclientCmd.Run()
-
-	return err
+	return debugmode.DebugExec("pkill", "-HUP", "dhclient")
 }

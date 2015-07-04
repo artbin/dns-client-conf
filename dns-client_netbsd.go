@@ -1,6 +1,6 @@
 package dnsclientconf
 
-import "os/exec"
+import "github.com/ArtemKulyabin/dns-client-conf/debugmode"
 
 const (
 	ResolvConfigPath         = "/etc/resolv.conf"
@@ -10,11 +10,5 @@ const (
 
 // For details please see https://www.netbsd.org/docs/network/dhcp.html#enable-dhcp
 func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
-	dhclientCmd := exec.Command("sh", "/etc/rc.d/dhclient", "restart")
-	err = dhclientCmd.Run()
-	if err != nil {
-		return err
-	}
-
-	return err
+	return debugmode.DebugExec("sh", "/etc/rc.d/dhclient", "restart")
 }
