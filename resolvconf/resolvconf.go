@@ -2,13 +2,16 @@ package resolvconf
 
 import (
 	"bufio"
+	"net"
 	"os"
 	"strings"
+
+	"github.com/ArtemKulyabin/dns-client-conf/helpers"
 )
 
 // GetNameServers consume resolv.conf path and returns current host dns servers
 // addresses.
-func GetNameServers(filename string) (addrs []string, err error) {
+func GetNameServers(filename string) (addrs []net.IP, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -33,7 +36,11 @@ func GetNameServers(filename string) (addrs []string, err error) {
 		switch lineArr[0] {
 		case "nameserver": // add one name server
 			if len(lineArr) > 1 {
-				addrs = append(addrs, lineArr[1])
+				err = helpers.CheckIP(lineArr[1])
+				if err != nil {
+					return addrs, err
+				}
+				addrs = append(addrs, net.ParseIP(lineArr[1]))
 			}
 
 		}

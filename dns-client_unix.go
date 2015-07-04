@@ -3,6 +3,8 @@
 package dnsclientconf
 
 import (
+	"net"
+
 	"github.com/ArtemKulyabin/dns-client-conf/dhclient"
 	"github.com/ArtemKulyabin/dns-client-conf/resolvconf"
 )
@@ -15,11 +17,11 @@ func NewDNSConfigurator() DNSConfigurator {
 	return &dNSConfig{ResolvConfigPath, DhclientConfigPath, DhclientConfigPathBackup}
 }
 
-func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
+func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
 	return resolvconf.GetNameServers(dnsconf.resolvConfigPath)
 }
 
-func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
+func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
 	err = dhclient.AddNameServers(addrs, dnsconf.dhclientConfigPath, dnsconf.dhclientConfigPathBackup)
 	if err != nil {
 		return err

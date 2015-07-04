@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
+	"net"
 	"os"
-	"strings"
 
 	"github.com/ArtemKulyabin/dns-client-conf"
 	"github.com/ArtemKulyabin/dns-client-conf/debugmode"
+	"github.com/ArtemKulyabin/dns-client-conf/helpers"
 
 	"github.com/codegangsta/cli"
 )
@@ -18,11 +19,21 @@ func getNameServers(c *cli.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	println(strings.Join(addrs, "\n"))
+	for _, addr := range addrs {
+		println(addr.String())
+	}
 }
 
 func addNameServers(c *cli.Context) {
-	err := dnsconf.AddNameServers(c.Args())
+	var addrs []net.IP
+	for _, addr := range c.Args() {
+		err := helpers.CheckIP(addr)
+		if err != nil {
+			log.Fatal(err)
+		}
+		addrs = append(addrs, net.ParseIP(addr))
+	}
+	err := dnsconf.AddNameServers(addrs)
 	if err != nil {
 		log.Fatal(err)
 	} else {

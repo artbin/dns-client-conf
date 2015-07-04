@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"net"
 	"os/exec"
 	"strings"
 
@@ -22,16 +23,9 @@ func NewDNSConfigurator() DNSConfigurator {
 // For details please see http://stackoverflow.com/questions/18620173/how-can-i-set-change-dns-using-the-command-prompt-at-windows-8
 // and https://technet.microsoft.com/en-us/library/cc778503(v=ws.10).aspx
 
-func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
-	for _, addr := range addrs {
-		err = helpers.CheckIP(addr)
-		if err != nil {
-			return err
-		}
-	}
-
+func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
 	for i, addr := range addrs {
-		err = debugmode.DebugExec("netsh", "interface", "ip", "add", "dnsservers", dnsconf.Interface, addr, fmt.Sprintf("%d", i+1))
+		err = debugmode.DebugExec("netsh", "interface", "ip", "add", "dnsservers", dnsconf.Interface, addr.String(), fmt.Sprintf("%d", i+1))
 		if err != nil {
 			return err
 		}
@@ -53,7 +47,7 @@ func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
 	return debugmode.DebugExec("ipconfig", "/flushdns")
 }
 
-func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
+func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
 	netshCmd := exec.Command("netsh", "interface", "ip", "show", "dnsservers", dnsconf.Interface)
 	outputbuf, err := netshCmd.CombinedOutput()
 	if err != nil {
@@ -80,7 +74,7 @@ func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
 		for _, addr := range lineArr {
 			err = helpers.CheckIP(addr)
 			if err == nil {
-				addrs = append(addrs, addr)
+				addrs = append(addrs, net.ParseIP(addr))
 			}
 			err = nil
 		}

@@ -4,6 +4,8 @@ dns client settings.
 */
 package dnsclientconf
 
+import "net"
+
 // DNSConfigurator is the interface that wraps the NameServers methods. In
 // most cases all methods need Administrator priviledges(except GetNameServers).
 //
@@ -19,8 +21,8 @@ package dnsclientconf
 //
 // ReloadNameServers is the method that safety refresh dns settings.
 type DNSConfigurator interface {
-	GetNameServers() (addrs []string, err error)
-	AddNameServers(addrs []string) error
+	GetNameServers() ([]net.IP, error)
+	AddNameServers(addrs []net.IP) error
 	DHCPNameServers() error
 	ReloadNameServers() error
 }

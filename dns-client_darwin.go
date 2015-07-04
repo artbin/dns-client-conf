@@ -1,6 +1,8 @@
 package dnsclientconf
 
 import (
+	"net"
+
 	"github.com/ArtemKulyabin/dns-client-conf/debugmode"
 	"github.com/ArtemKulyabin/dns-client-conf/resolvconf"
 )
@@ -15,10 +17,12 @@ func NewDNSConfigurator() DNSConfigurator {
 	return &dNSConfig{ResolvConfigPath, "en0"}
 }
 
-func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
+func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
 	//networksetup -setdnsservers Ethernet addrs
 	args := []string{"-setdnsservers", "Ethernet"}
-	args = append(args, addrs...)
+	for _, addr := range addrs {
+		args = append(args, addr.String())
+	}
 	err = debugmode.DebugExec("networksetup", args...)
 	if err != nil {
 		return err
@@ -27,7 +31,7 @@ func (dnsconf *dNSConfig) AddNameServers(addrs []string) (err error) {
 	return dnsconf.ReloadNameServers()
 }
 
-func (dnsconf *dNSConfig) GetNameServers() (addrs []string, err error) {
+func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
 	return resolvconf.GetNameServers(dnsconf.resolvConfigPath)
 }
 
