@@ -12,12 +12,15 @@ import (
 	"github.com/ArtemKulyabin/dns-client-conf/helpers"
 )
 
+const InterfaceName = "Local Area Connection"
+
 type dNSConfig struct {
-	Interface string
+	iface *net.Interface
 }
 
 func NewDNSConfigurator() DNSConfigurator {
-	return &dNSConfig{"Local Area Connection"}
+	iface, _ := net.InterfaceByName(InterfaceName)
+	return &dNSConfig{iface}
 }
 
 // For details please see http://stackoverflow.com/questions/18620173/how-can-i-set-change-dns-using-the-command-prompt-at-windows-8
@@ -25,7 +28,7 @@ func NewDNSConfigurator() DNSConfigurator {
 
 func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
 	for i, addr := range addrs {
-		err = debugmode.DebugExec("netsh", "interface", "ip", "add", "dnsservers", dnsconf.Interface, addr.String(), fmt.Sprintf("%d", i+1))
+		err = debugmode.DebugExec("netsh", "interface", "ip", "add", "dnsservers", dnsconf.iface.Name, addr.String(), fmt.Sprintf("%d", i+1))
 		if err != nil {
 			return err
 		}
@@ -35,7 +38,7 @@ func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
 }
 
 func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
-	err = debugmode.DebugExec("netsh", "interface", "ip", "set", "dnsservers", dnsconf.Interface, "dhcp")
+	err = debugmode.DebugExec("netsh", "interface", "ip", "set", "dnsservers", dnsconf.iface.Name, "dhcp")
 	if err != nil {
 		return err
 	}
@@ -48,7 +51,7 @@ func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
 }
 
 func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
-	netshCmd := exec.Command("netsh", "interface", "ip", "show", "dnsservers", dnsconf.Interface)
+	netshCmd := exec.Command("netsh", "interface", "ip", "show", "dnsservers", dnsconf.iface.Name)
 	outputbuf, err := netshCmd.CombinedOutput()
 	if err != nil {
 		return nil, err
@@ -81,4 +84,8 @@ func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
 	}
 
 	return addrs, err
+}
+
+func (dnsconf *dNSConfig) SetInterface(iface *net.Interface) {
+	dnsconf.iface = iface
 }

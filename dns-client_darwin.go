@@ -7,14 +7,19 @@ import (
 	"github.com/ArtemKulyabin/dns-client-conf/resolvconf"
 )
 
-const ResolvConfigPath = "/etc/resolv.conf"
+const (
+	ResolvConfigPath = "/etc/resolv.conf"
+	InterfaceName    = "en0"
+)
 
 type dNSConfig struct {
-	resolvConfigPath, Interface string
+	resolvConfigPath string
+	iface            *net.Interface
 }
 
 func NewDNSConfigurator() DNSConfigurator {
-	return &dNSConfig{ResolvConfigPath, "en0"}
+	iface, _ := net.InterfaceByName(InterfaceName)
+	return &dNSConfig{ResolvConfigPath, iface}
 }
 
 func (dnsconf *dNSConfig) AddNameServers(addrs []net.IP) (err error) {
@@ -36,7 +41,7 @@ func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
 }
 
 func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
-	err = debugmode.DebugExec("ipconfig", "set", dnsconf.Interface, "DHCP")
+	err = debugmode.DebugExec("ipconfig", "set", dnsconf.iface.Name, "DHCP")
 	if err != nil {
 		return err
 	}
@@ -51,4 +56,8 @@ func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
 	}
 
 	return debugmode.DebugExec("discoveryutil", "udnsflushcaches")
+}
+
+func (dnsconf *dNSConfig) SetInterface(iface *net.Interface) {
+	dnsconf.iface = iface
 }

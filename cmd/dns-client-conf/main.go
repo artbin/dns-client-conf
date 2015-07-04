@@ -93,6 +93,13 @@ func main() {
 		if c.IsSet("debug") {
 			debugmode.ActivateDebugMode()
 		}
+		if c.IsSet("interface") {
+			iface, err := net.InterfaceByName(c.String("interface"))
+			if err != nil {
+				log.Fatal(err)
+			}
+			dnsconf.SetInterface(iface)
+		}
 		return nil
 	}
 
@@ -100,6 +107,10 @@ func main() {
 		cli.BoolFlag{
 			Name:  "debug",
 			Usage: "activate debug mode",
+		},
+		cli.StringFlag{
+			Name:  "interface",
+			Usage: "network interface name",
 		},
 	}
 

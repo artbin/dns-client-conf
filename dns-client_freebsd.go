@@ -6,6 +6,7 @@ const (
 	ResolvConfigPath         = "/etc/resolv.conf"
 	DhclientConfigPath       = "/etc/dhclient.conf"
 	DhclientConfigPathBackup = "/etc/dhclient.conf.auto"
+	InterfaceName            = "em0"
 )
 
 // For details please see http://www.cyberciti.biz/faq/freebsd-unix-force-dhcp-client-to-get-a-new-lease/

@@ -25,4 +25,5 @@ type DNSConfigurator interface {
 	AddNameServers(addrs []net.IP) error
 	DHCPNameServers() error
 	ReloadNameServers() error
+	SetInterface(iface *net.Interface)
 }

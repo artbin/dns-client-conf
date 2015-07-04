@@ -6,6 +6,7 @@ const (
 	ResolvConfigPath         = "/etc/resolv.conf"
 	DhclientConfigPath       = "/etc/dhclient.conf"
 	DhclientConfigPathBackup = "/etc/dhclient.conf.auto"
+	InterfaceName            = ""
 )
 
 // For details please see http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/dhclient.8

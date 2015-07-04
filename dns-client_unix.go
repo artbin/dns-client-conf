@@ -11,10 +11,12 @@ import (
 
 type dNSConfig struct {
 	resolvConfigPath, dhclientConfigPath, dhclientConfigPathBackup string
+	iface                                                          *net.Interface
 }
 
 func NewDNSConfigurator() DNSConfigurator {
-	return &dNSConfig{ResolvConfigPath, DhclientConfigPath, DhclientConfigPathBackup}
+	iface, _ := net.InterfaceByName(InterfaceName)
+	return &dNSConfig{ResolvConfigPath, DhclientConfigPath, DhclientConfigPathBackup, iface}
 }
 
 func (dnsconf *dNSConfig) GetNameServers() (addrs []net.IP, err error) {
@@ -37,4 +39,8 @@ func (dnsconf *dNSConfig) DHCPNameServers() (err error) {
 	}
 
 	return dnsconf.ReloadNameServers()
+}
+
+func (dnsconf *dNSConfig) SetInterface(iface *net.Interface) {
+	dnsconf.iface = iface
 }
