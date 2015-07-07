@@ -12,5 +12,5 @@ install:
 
 script:
   - dns-client-conf show
-  - sudo dns-client-conf --debug=true add 8.8.8.8 8.8.4.4
+  - sudo $HOME/gopath/bin/dns-client-conf --debug=true add 8.8.8.8 8.8.4.4
   - dns-client-conf show
