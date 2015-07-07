@@ -1,5 +1,7 @@
 # dns-client-conf - Simple and portable cli tool and golang package for work with operating system dns client settings
 
+[![Build Status](https://travis-ci.org/ArtemKulyabin/dns-client-conf.svg)](https://travis-ci.org/ArtemKulyabin/dns-client-conf)
+
 ## Installation
 
 To install dns-client-conf, please use `go get`.
