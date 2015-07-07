@@ -6,9 +6,9 @@ go:
   - tip
 install:
   - go get "github.com/codegangsta/cli"
-  - go get -v
-  - go build -v
-  - go install
+  - go install "./cmd/dns-client-conf"
 
 script:
+  - dns-client-conf show
   - dns-client-conf --debug=true add 8.8.8.8 8.8.4.4
+  - dns-client-conf show
