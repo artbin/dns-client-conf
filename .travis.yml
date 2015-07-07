@@ -14,3 +14,5 @@ script:
   - dns-client-conf show
   - sudo $HOME/gopath/bin/dns-client-conf --debug=true add 8.8.8.8 8.8.4.4
   - dns-client-conf show
+  - sudo $HOME/gopath/bin/dns-client-conf dhcp
+  - dns-client-conf show
