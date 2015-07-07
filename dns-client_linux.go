@@ -21,5 +21,7 @@ func (dnsconf *dNSConfig) ReloadNameServers() (err error) {
 		return err
 	}
 
-	return debugmode.DebugExec("service", "network-manager", "restart")
+	debugmode.DebugExec("service", "network-manager", "restart")
+
+	return err
 }
